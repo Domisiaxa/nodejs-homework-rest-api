@@ -195,9 +195,9 @@ const verify = async (req, res, next) => {
     );
     if (user) {
       user.verify = true;
-      return res.status(200).send("Verification successful");
+      return res.status(200).send({ message: "Verification successful" });
     } else {
-      return res.status(404).send("User not found.");
+      return res.status(404).send({ message: "User not found." });
     }
   } catch (e) {
     console.log(e.message);
@@ -209,14 +209,16 @@ const resendVerification = async (req, res, next) => {
   const user = await User.findOne({ email });
   try {
     if (!email) {
-      return res.status(400).send("missing required field email");
+      return res.status(400).send({ message: "missing required field email" });
     }
     if (user.verify === true) {
-      return res.status(400).send("Verification has already been passed");
+      return res
+        .status(400)
+        .send({ message: "Verification has already been passed" });
     } else {
       const verificationToken = user.verificationToken;
       sendVerificationEmail(email, verificationToken);
-      return res.status(200).send("Verification email sent");
+      return res.status(200).send({ message: "Verification email sent" });
     }
   } catch (e) {
     console.log(e.message);
